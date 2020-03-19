@@ -17,7 +17,7 @@
                         </div>
                         <div class="card-content">
                             <p class="category">Orders</p>
-                            <h3 class="title text-danger font-weight-bold">{{ App\Order::all()->count() }}</h3>
+                            <h3 class="title text-danger font-weight-bold">{{ App\OrderManage::where('status',0)->count() }}</h3>
                         </div>
                         <div class="card-footer">
                             <div class="stats">
@@ -33,7 +33,7 @@
                         </div>
                         <div class="card-content">
                             <p class="category">Delivery Pending</p>
-                            <h3 class="title font-weight-bold text-warning">{{\App\Shipping::where('status',0)->count()}}
+                            <h3 class="title font-weight-bold text-warning">{{\App\OrderManage::where('is_complete',0)->count()}}
                             </h3>
                         </div>
                         <div class="card-footer">
@@ -51,7 +51,7 @@
                         </div>
                         <div class="card-content">
                             <p class="category">Delivery Completed</p>
-                            <h3 class="title font-weight-bold text-success">{{App\Shipping::where('status',1)->count() }}</h3>
+                            <h3 class="title font-weight-bold text-success">{{App\OrderManage::where('is_complete',1)->count() }}</h3>
                         </div>
                         <div class="card-footer">
                             <div class="stats">
@@ -68,7 +68,7 @@
                         </div>
                         <div class="card-content">
                             <p class="category">Sales</p>
-                            <h3 class="title font-weight-bold text-primary">{{\App\Shipping::all()->count()}}</h3>
+                            <h3 class="title font-weight-bold text-primary">{{\App\OrderDetails::all()->count()}}</h3>
                         </div>
                         <div class="card-footer">
                             <div class="stats">

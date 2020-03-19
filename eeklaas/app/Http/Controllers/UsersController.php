@@ -255,6 +255,11 @@ class UsersController extends Controller
         foreach(Cart::totalCarts() as $cart){
             $product = Product::where('id',$cart->product_id)->first();
             $seller_id = $product->seller_id;
+            $quantities = $product->quantity;
+            $stock = $quantities-$cart->product_quantity;
+            $product->quantity=$stock;
+            $product->save();
+
             $order_details = new OrderDetails();
             $order_details->order_id = $order->id;
             $order_details->product_id = $cart->product_id;

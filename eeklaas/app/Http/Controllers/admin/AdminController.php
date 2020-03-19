@@ -9,6 +9,7 @@ use App\ProductImage;
 use App\Seller;
 use App\Shipping;
 use App\User;
+use App\OrderDetails;
 use Illuminate\Support\Facades\Session;
 use PDF;
 use Charts;
@@ -133,7 +134,8 @@ class AdminController extends Controller
     }
 
     public function inventory(){
-        $deliveries = Shipping::orderBy('id', 'desc')->get();
+        $currentDate = date('Y-m-d');
+        $deliveries = OrderDetails::where('created_at',$currentDate )->orderBy('id', 'desc')->get();
         return view('admin.Inventory.index',compact('deliveries'));
     }
     public function stockIn(){
@@ -160,43 +162,13 @@ class AdminController extends Controller
     }
     public function addDiscount(Request $request){
         $product = Product::where('id',$request->id)->first();
+        $updatePrice = $product->price-$request->offer_price;
         $product->status = $request->status;
+        $product->new_price = $updatePrice;
         $product->offer_price = $request->offer_price;
         $product->save();
         return redirect()->route('product.index')->with('successMsg','Discount Successfully Saved');
 
-    }
-
-    public function shippingStore(Request $request){
-        $this->validate($request,[
-                'supplier'=>'required',
-        ]);
-
-            $payment = $request->payment_type;
-            $seller = $request->seller_id;
-        Shipping::create([
-            'product_id'=> request('product_id'),
-            'payment_type'=> $payment,
-            'seller_id'=> $seller,
-            'productName'=> request('productName'),
-            'quantity'=> request('quantity'),
-            'price'=> request('price'),
-            'shipping_charge'=> request('shipping_charge'),
-            'discount'=> request('discount'),
-            'total_price'=> request('total_price'),
-            'address'=> request('address'),
-            'phone'=> request('phone'),
-            'supplier'=> request('supplier'),
-
-        ]);
-        $product = Product::where('id',$request->product_id)->first();
-        $quantities = $product->quantity;
-        $stock = $quantities-$request->quantity;
-        $product->quantity=$stock;
-        $product->save();
-        $removeProduct = Order::where('id',$request->id)->first();
-        $removeProduct->delete();
-        return redirect()->route('inventory.index')->with('successMsg','All Info Successfully Saved');
     }
 
     public function complete($id){
@@ -220,11 +192,11 @@ class AdminController extends Controller
     }
 
     public function Sales(){
-        $sales = Shipping::where('status',1)->get();
+        $sales = OrderDetails::all();
         return view('admin.Inventory.salesContain',compact('sales'));
     }
     public function salesInvoice(){
-        $sales = Shipping::where('status',1)->get();
+        $sales = OrderDetails::all();
         $sale = PDF::loadView('admin.Inventory.salesInvoice',compact('sales'));
         $sale->stream('sales.pdf');
         return $sale->download('sales.pdf');

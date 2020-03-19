@@ -169,7 +169,7 @@ Auth::routes();
    */
 
   Route::get('/', 'OrdersController@index')->name('order.index');
-  Route::post('/update/quantity', 'OrdersController@update')->name('update.customer');
+  Route::post('/update/quantity/{id}', 'OrdersController@update')->name('update.customer');
   Route::get('/view/{id}', 'OrdersController@show')->name('orders-show');
   Route::post('/delete/{id}', 'OrdersController@delete')->name('order-delete');
   Route::get('/invoice/{id}', 'OrdersController@generateInvoice')->name('adminOrder.invoice');
@@ -199,7 +199,7 @@ Auth::routes();
       Route::get('/shipping/orders/{id}','AdminController@shipping')->name('shipping.orders');
       Route::post('/add/quantity/','AdminController@addQuantity')->name('add.quantity');
       Route::post('/add/discount/','AdminController@addDiscount')->name('add.discount');
-      Route::post('/shipping/store','AdminController@shippingStore')->name('shipping.store');
+
       Route::get('/delivery/complete/{id}','AdminController@complete')->name('delivery.complete');
       Route::get('/stock/invoice/','AdminController@stockInvoice')->name('invoice.create');
       Route::get('/stockOut/invoice','AdminController@stockOutInvoice')->name('invoice.stockOut');

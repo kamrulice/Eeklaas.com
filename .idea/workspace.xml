@@ -13,6 +13,9 @@
       <executable />
     </execution>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="PhpWorkspaceProjectConfiguration">
     <include_path>
       <path value="$PROJECT_DIR$/eeklaas/vendor/phpunit/phpunit" />
@@ -198,6 +201,7 @@
       <workItem from="1584508840829" duration="150000" />
       <workItem from="1584509722212" duration="36000" />
       <workItem from="1584509977428" duration="8000" />
+      <workItem from="1584591656935" duration="30000" />
     </task>
     <servers />
   </component>
