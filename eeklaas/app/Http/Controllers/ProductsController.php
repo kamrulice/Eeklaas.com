@@ -20,10 +20,8 @@ class ProductsController extends Controller
 
 	public function all($id)
 	{
-		// $categories= Category::paginate(1);
+	
 		$categories= Category::where('id', $id)->get();
-//		$category_id = $categories->id;
-//		$products = Product::where('category_id',$category_id)->paginate(3);
 		$sliders=Slider::orderBy('id','desc')->get();
         return view('frontend.pages.products.all_product',compact('products','sliders','categories'));
 	}

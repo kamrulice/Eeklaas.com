@@ -37,10 +37,10 @@
                         </div>
                         <div class="card-body">
                             <div class="">
-                                <div class="mt-2">Total Sales Amounts<span class="float-right badge badge-info badge-pill">{{$dueTotal}}</span></div>
-                                <div class="mt-2">Receive Amounts<span class="float-right badge badge-success badge-pill">{{$total}}</span></div>
-                                @php $totalTransaction =$dueTotal-$total;  @endphp
-                                <div class="mt-2">Due Amounts<span class="float-right badge badge-danger badge-pill">{{$totalTransaction}}</span></div>
+                                <div class="mt-2">Total Sales Amounts<span class="float-right badge badge-info badge-pill">{{$total}}&nbsp;TK</span></div>
+                                <div class="mt-2">Receive Amounts<span class="float-right badge badge-success badge-pill">{{$dueTotal}}&nbsp;TK</span></div>
+                                @php $totalTransaction =$total-$dueTotal;  @endphp
+                                <div class="mt-2">Due Amounts<span class="float-right badge badge-danger badge-pill">{{$totalTransaction}}&nbsp;TK</span></div>
                             </div>
                         </div>
                     </div>

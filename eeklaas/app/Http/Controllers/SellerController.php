@@ -6,6 +6,7 @@ use App\Banner;
 use App\Product;
 use App\ProductImage;
 use App\Shipping;
+use App\OrderManage;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,10 +15,12 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use App\Seller;
+use App\OrderDetails;
 use App\SendCode;
 use Illuminate\Support\Str;
 use Image;
 use PDF;
+use DB;
 
 class SellerController extends Controller
 {
@@ -89,12 +92,16 @@ class SellerController extends Controller
     public function sellerDashboard(){
         $id =  Session::get('sellerId');
         $seller = Seller::find($id);
-        $complete = Shipping::where('seller_id',$id)
-                    ->where('status',1)
-                    ->get();
-        $pending = Shipping::where('seller_id',$id)
-                    ->where('status',0)
-                     ->get();
+
+        $complete = OrderDetails::where('seller_id',$id)->orderBy('id','desc')->get();
+
+        $pending = DB::table('order_details')
+                 ->join('order_manages','order_manages.id','=','order_details.order_id')
+                  ->select('order_manages.id')
+                 ->where('order_details.seller_id',$id)
+                  ->where('order_manages.is_complete',0)
+                  ->get();
+         
 
         $premium = Shipping::where('seller_id',$id)
             ->where('shipping_charge',0)
@@ -111,20 +118,17 @@ class SellerController extends Controller
                                 ->get();
 
 
-        $dailys = Shipping::where('created_at', '>=',Carbon::now()->subDays(7))
+        $dailys = OrderDetails::where('created_at', '>=',Carbon::now()->subDays(7))
             ->where('seller_id',$id)
-            ->where('status',0)
             ->orderBy('created_at', 'asc')
             ->get();
-        $halfMonths =  Shipping::where('created_at', '>=',Carbon::now()->subDays(15))
+        $halfMonths = OrderDetails::where('created_at', '>=',Carbon::now()->subDays(15))
             ->where('seller_id',$id)
-            ->where('status',0)
             ->orderBy('created_at', 'asc')
             ->get();
 
-        $Months =  Shipping::where('created_at', '>=',Carbon::now()->subDays(30))
+        $Months =  OrderDetails::where('created_at', '>=',Carbon::now()->subDays(30))
             ->where('seller_id',$id)
-            ->where('status',0)
             ->orderBy('created_at', 'asc')
             ->get();
             $perDaySales = 0;
@@ -132,18 +136,17 @@ class SellerController extends Controller
             $perMonthSales = 0;
 
         foreach ($dailys as $daily){
-            $perDaySales+=$daily->total_price;
+            $total_price = $daily->product_price*$daily->product_quantity;
+            $perDaySales+=$total_price;
         }
         foreach ($halfMonths as $daily){
-            $perWeekSales+=$daily->total_price;
+            $total_price = $daily->product_price*$daily->product_quantity;
+            $perWeekSales+=$total_price;
         }
         foreach ($Months as $daily){
-            $perMonthSales+=$daily->total_price;
+            $total_price = $daily->product_price*$daily->product_quantity;
+            $perMonthSales+=$total_price;
         }
-
-
-
-
         return view('frontend.pages.Seller.index',compact('seller','complete','pending','premium','reject','expiryDate','perDaySales','perWeekSales','perMonthSales'));
     }
 
@@ -233,6 +236,7 @@ class SellerController extends Controller
     }
 
     public function product(){
+        
         return view('frontend.pages.Seller.addProduct');
     }
 

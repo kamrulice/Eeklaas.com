@@ -20,31 +20,25 @@
                             <th>Product Name</th>
                             <th>Quantity</th>
                             <th>price</th>
-                            <th>Discount</th>
-                            <th>Shipping Cost</th>
-                            <th>Total Price</th>
+                            <th>Sub-total</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <?php $total=0;?>
+                        <?php $total=0; $total_price;?>
                         @foreach($sales as $key=> $delivery)
                             <tr>
                                 <td>{{$key+1}}</td>
-                                <td>{{$delivery->productName}}</td>
-                                <td>{{$delivery->quantity}}</td>
-                                <td>{{$delivery->price}}</td>
-                                <td>{{$delivery->discount}}</td>
-                                <td>{{$delivery->shipping_charge}}</td>
-                                <td>{{$delivery->total_price}}</td>
-                                @php $total = $total+$delivery->total_price @endphp
+                                <td>{{$delivery->product_name}}</td>
+                                <td>{{$delivery->product_quantity}}</td>
+                                <td>{{$delivery->product_price}}</td>
+                                <td>{{$delivery->product_quantity*$delivery->product_price}}</td>
+                                @php
+                                $total_price= $delivery->product_quantity*$delivery->product_price;
+                                 $total += $total_price ;@endphp
                             </tr>
                         @endforeach
                         <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td colspan="2"></td>
-
+                            <td colspan="3"></td>
                             <td>Total Sale</td>
                             <td><?php echo $total; ?></td>
                         </tr>

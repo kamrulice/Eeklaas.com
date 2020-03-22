@@ -44,7 +44,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-      $orders = DB::table('shippings')
+      $orders = DB::table('order_details')
             ->select('product_id', DB::raw('count(*) as total'))
             ->groupBy('product_id')
             ->orderBy('product_id','desc')

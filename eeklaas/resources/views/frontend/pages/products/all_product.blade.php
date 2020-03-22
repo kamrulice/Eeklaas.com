@@ -41,20 +41,25 @@
                       $<span id="amount-right"></span> </span> </div>
                   </div>
                   <ol class="items">
-                    <li class="item ">
+                  <li class="item ">
                       <label>
                         <input type="checkbox">
-                        <span>$20 - $50 <span class="count">(20)</span> </span> </label>
+                        <span>&#2547;100 - &#2547;500 <span class="count">(20)</span></span> </label>
                     </li>
                     <li class="item ">
                       <label>
                         <input type="checkbox">
-                        <span>$50 - $100 <span class="count">(20)</span> </span> </label>
+                        <span>&#2547;501 - &#2547;1000 <span class="count">(20)</span></span> </label>
                     </li>
                     <li class="item ">
                       <label>
                         <input type="checkbox">
-                        <span>$100 - $250 <span class="count">(20)</span> </span> </label>
+                        <span>&#2547;1001 - &#2547;10000 <span class="count">(20)</span></span> </label>
+                    </li>
+                    <li class="item ">
+                      <label>
+                        <input type="checkbox">
+                        <span>&#2547;10000 - &#2547;100000 <span class="count">(20)</span></span> </label>
                     </li>
                   </ol>
                 </div>
@@ -183,7 +188,7 @@
           <div class="block-sidebar block-sidebar-products">
             <div class="block-title"> <strong>PRODUCTS</strong> </div>
             <div class="block-content">
-                @foreach(\App\Product::latest()->take(5)->get() as $product)
+                @foreach(\App\Product::where('published',1)->latest()->take(5)->get() as $product)
                     <div class="product-item product-item-opt-1">
                         <div class="product-item-info">
                             <div class="product-item-photo">
@@ -193,7 +198,7 @@
                                         @if($i > 0)
 
                                             <a class="product-item-img" href="{{ route('products.show',$product->id)}}">
-                                                <img alt="product name" src="{{ asset('uploads/products/'.$image->image)}}" width="200" height="200">
+                                                <img alt="product name" src="{{ asset('uploads/products/'.$image->image)}}" width="186" height="200">
                                             </a>
                                         @endif
                                         @php $i--; @endphp
@@ -279,7 +284,9 @@
           </div>
           <div class="products  products-grid">
             <ol class="product-items row">
-              @foreach($products = \App\Product::where('category_id',$category->id)->paginate(12) as $product)
+              @foreach($products = \App\Product::where('category_id',$category->id)
+              ->where('published',1)
+              ->paginate(21) as $product)
               <li class="col-sm-4 product-item ">
                 <div class="product-item-opt-1">
                   <div class="product-item-info">
@@ -299,11 +306,22 @@
                       <div class="product-item-actions">
                         @include('frontend.pages.products.partials.wish-button')
                       </div>
+                      @if($product->quantity>0)
                         @include('frontend.pages.products.partials.cart-button')
+                        @endif
+                        @if($product->offer_price>0)
+                        <span class="product-item-label label-price">{{$product->offer_price}}% <span>off</span></span>
+                        @endif
+
                     </div>
                     <div class="product-item-detail"> <strong class="product-item-name"><a href="">{{$product->title}}</a></strong>
                       <div class="clearfix">
-                        <div class="product-item-price"> <span class="price">&#2547; {{$product->price}}</span> <span class="old-price">$52.00</span> </div>
+                      @if($product->new_price)
+                  <div class="product-item-price"> <span class="price">&#2547;{{$product->new_price}}</span> <span class="old-price">&#2547;{{$product->price}}.00</span> </div>         
+                  @else
+                  <div class="product-item-price"> <span class="price">&#2547;{{$product->price}}</span></div>
+                  @endif
+
                         <div class="product-reviews-summary">
                           <div class="rating-summary">
                             <div class="rating-result" title="80%"> <span style="width:80%"> <span><span>80</span>% of <span>100</span></span> </span> </div>

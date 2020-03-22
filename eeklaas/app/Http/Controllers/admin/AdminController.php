@@ -134,8 +134,8 @@ class AdminController extends Controller
     }
 
     public function inventory(){
-        $currentDate = date('Y-m-d');
-        $deliveries = OrderDetails::where('created_at',$currentDate )->orderBy('id', 'desc')->get();
+       
+        $deliveries = OrderDetails::orderBy('id', 'desc')->get();
         return view('admin.Inventory.index',compact('deliveries'));
     }
     public function stockIn(){
@@ -162,7 +162,8 @@ class AdminController extends Controller
     }
     public function addDiscount(Request $request){
         $product = Product::where('id',$request->id)->first();
-        $updatePrice = $product->price-$request->offer_price;
+        $offer_price = ($product->price*$request->offer_price)/100;
+        $updatePrice = $product->price-$offer_price;
         $product->status = $request->status;
         $product->new_price = $updatePrice;
         $product->offer_price = $request->offer_price;
@@ -227,13 +228,13 @@ class AdminController extends Controller
     }
 
     public function sellerOrder($id){
-        $orders = Shipping::where('seller_id',$id)->get();
+        $orders = Orderdetails::where('seller_id',$id)->orderBy('id','desc')->get();
        return view('admin.Seller.orderContain',compact('orders'));
     }
 
     public function sellerSales($id){
-        $sales = Shipping::where('seller_id',$id)
-                            ->where('status',1)
+        $sales = Orderdetails::where('seller_id',$id)
+                            ->orderBy('id','desc')
                             ->get();
         $salerId = $id;
         Session::put('id',$salerId);
@@ -242,9 +243,9 @@ class AdminController extends Controller
 
     public function sellerSalesInvoice(){
         $id = Session::get('id');
-        $sales = Shipping::where('seller_id',$id)
-            ->where('status',1)
-            ->get();
+        $sales = Orderdetails::where('seller_id',$id)
+                ->orderBy('id','desc')
+               ->get();
         $sale = PDF::loadView('admin.Seller.salesInvoice',compact('sales'));
         $sale->stream('sales.pdf');
         return $sale->download('sales.pdf');

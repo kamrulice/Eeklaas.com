@@ -92,8 +92,9 @@ Route::group(['prefix' => 'user','middleware'=>['user','auth'] ], function() {
   Route::get('/view/confirm/order','UsersController@viewOrder')->name('view.order');
   Route::post('/submit/order','UsersController@store')->name('order.confirm');
   Route::get('/order/invoice','UsersController@invoice')->name('order.invoice');
+  Route::post('/user/order/delete/{id}','UsersController@delete')->name('user-order-delete');
 
-
+  Route::get('/user/order/view/{id}','UsersController@viewOrder')->name('user.order.view');
 
   // generate Invoice
 
@@ -286,8 +287,8 @@ Route::group(['middleware'=>'seller'],function(){
     Route::get('/seller/stock/invoice','SellerProductController@sellerStockInvoice')->name('seller.stock.invoice');
     Route::get('/seller/stockOut/invoice','SellerProductController@sellerStockOutInvoice')->name('seller.stockOut.invoice');
     Route::get('/seller/transactions','SellerProductController@sellerTransaction')->name('seller.transactions');
-
-
+  
+    Route::get('/seller/order/view/{id}','SellerProductController@sellerOrder')->name('seller.order.view');
 });
 
 

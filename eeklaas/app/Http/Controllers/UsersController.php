@@ -20,7 +20,7 @@ use App\User;
 use App\Order;
 use App\Address;
 use DB;
-
+use Carbon\Carbon;
 use PDF;
 
 
@@ -33,19 +33,14 @@ class UsersController extends Controller
 
     public function dashboard()
     {
+         
     	$id = Auth::user()->id;
-    	$product = OrderManage::where('user_id',$id)->OrderBy('id','desc')->first();
-    	$orders = OrderDetails::where('order_id',$product->id)->get();
-    	$shipping = Delivery::where('id',$product->shipping_id)->first();
-
-
-//    	$orders = DB::table('order_manages')
-//            ->join('order_details', 'order_manages.id', '=', 'order_details.order_id')
-//            ->join('deliveries', 'deliveries.id', '=', 'order_manages.shipping_id')
-//            ->select('order_details.*','order_manages.*','deliveries.*')
-//            ->where('order_manages.user_id',$id)
-//            ->get();
-
+        $product = OrderManage::where('user_id',$id)
+                                 ->OrderBy('id','desc')->first();
+        $orders = OrderDetails::where('order_id',$product->id)
+                                ->get();
+        $shipping = Delivery::where('id',$product->shipping_id)
+                              ->first();
         return view('frontend.pages.users.dashboard',compact('user','orders','product','shipping'));
     }
 
@@ -138,8 +133,8 @@ class UsersController extends Controller
     public function order_status()
     {
         $user = Auth::user();
-        $Order_products = Order::where('user_id', Auth::user()->id)->get();
-        return view('frontend.pages.users.order_status',compact('user','Order_products'));
+        $orders = OrderManage::where('user_id', Auth::user()->id)->get();
+        return view('frontend.pages.users.order_status',compact('user','orders'));
     }
 
     public function order()
@@ -275,8 +270,30 @@ class UsersController extends Controller
             $deleteCart->delete();
         }
         return redirect()->route('user.dashboard')->with('successMsg','Order Successfully Submitted');
+    }
 
+    public function delete($id){
+            
+        $product = OrderManage::find($id);
+        if (!is_null($product)) {
+            $product->delete();
+        }
 
+        return redirect()->back()->with('successMsg','Order has been deleted successfully !!');
+    }
+
+    public function viewOrder($id){
+        $orderView = OrderManage::find($id);
+        $orders = OrderDetails::where('order_id',$orderView->id)->get();
+        $payment = paid::where('id',$orderView->id)->first();
+        if($orderView->status==0){
+        $orderView->status = 1;
+        $orderView->save();
+        }
+        
+        $shipping = Delivery::where('id',$orderView->shipping_id)->first();
+    
+    	return view('frontend.pages.users.orderDetails', compact('shipping','orders','orderView','payment'));
     }
 
 }

@@ -33,46 +33,40 @@
                             </span>
                         </div>
                         <div class="card-body">
-                            <table id="table" class="table table-bordered table-hover">
-                                <thead>
+                        <table id="table" class="table table-bordered table-hover table-responsive offset-3">
+                        <thead>
+                            <th>SL.</th>
+                            <th>Product Name</th>
+                            <th>Quantity</th>
+                            <th>Unit Price</th>
+                            <th>Total Price</th>
+                             
+                        </thead>
+                        <tbody>
+                            @foreach($complete as $key=> $delivery)
                                 <tr>
-                                    <th>SL.</th>
-                                    <th>SKU</th>
-                                    <th>Product Name</th>
-                                    <th>Quantity</th>
-                                    <th>price</th>
-                                    <th>Discount</th>
-                                    <th>Shipping Cost</th>
-                                    <th>Total Price</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <?php $total=0;?>
-                                @foreach($sales as $key=> $delivery)
-                                    <tr>
-                                        <td>{{$key+1}}</td>
-                                        <td>{{$delivery->shipping->sku}}</td>
-                                        <td>{{$delivery->productName}}</td>
-                                        <td>{{$delivery->quantity}}</td>
-                                        <td>{{$delivery->price}}</td>
-                                        <td>{{$delivery->discount}}</td>
-                                        <td>{{$delivery->shipping_charge}}</td>
-                                        <td>{{$delivery->total_price}}</td>
-                                        @php $total = $total+$delivery->total_price @endphp
+                                <td>{{$key+1}}</td>
+                                <td>{{$delivery->product_name}}</td>
+                                <td>{{$delivery->product_quantity}}</td>
+                                <td>{{$delivery->product_price}}</td>
+                                <td>{{$delivery->product_quantity*$delivery->product_price}}</td>
+                                @php
+                                $total_price= $delivery->product_quantity*$delivery->product_price;
+                                 $total += $total_price ;@endphp
+                            </tr>
+                        @endforeach
+                        <tr>
+                            <td colspan="3"></td>
+                            <td>Total Sale</td>
+                            <td><?php echo $total; ?></td>
+                        </tr>
+                        </tbody>
+                    </table>
 
-                                    </tr>
-                                @endforeach
-                                <tr>
 
-                                    <td colspan="6"></td>
 
-                                    <td>Total Sale</td>
-                                    <td><?php echo $total; ?></td>
-                                </tr>
-                                </tbody>
-                            </table>
                             <div class="text-center">
-                                <span class="text-center">{{$sales->links()}}</span>
+                                <span class="text-center">{{$complete->links()}}</span>
                             </div>
                         </div>
                     </div>

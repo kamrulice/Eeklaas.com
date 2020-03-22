@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Brand;
+use App\OrderManage;
+use App\OrderDetails;
 use App\Product;
 use App\ProductImage;
 use App\Shipping;
@@ -13,6 +15,9 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
+use DB;
+use App\paid;
+use App\Delivery;
 
 
 class SellerProductController extends Controller
@@ -86,7 +91,6 @@ class SellerProductController extends Controller
 
     public function sellerAddQuantity(Request $request){
         $quantity = Product::where('id',$request->id)->first();
-        dd($quantity);
         $quantities = $quantity->quantity;
         $stock = $quantities+ $request->quantity;
         $quantity->quantity = $stock;
@@ -96,7 +100,10 @@ class SellerProductController extends Controller
 
     public function sellerAddDiscount(Request $request){
         $product = Product::where('id',$request->id)->first();
+        $offer_price = ($product->price*$request->offer_price)/100;
+        $updatePrice = $product->price-$offer_price;
         $product->status = $request->status;
+        $product->new_price = $updatePrice;
         $product->offer_price = $request->offer_price;
         $product->save();
         return redirect()->route('sellerAll.product')->with('msg','Discount Successfully Saved');
@@ -104,10 +111,25 @@ class SellerProductController extends Controller
 
     public function sellerOrderProduct(){
         $id =  Session::get('sellerId');
-        $orders = Shipping::where('seller_id',$id)
-            ->orderBy('id','desc')
-            ->paginate(10);
+       $orders = DB::table('order_details')
+                 ->join('order_manages','order_manages.id','=','order_details.order_id')
+                  ->select('order_manages.*')
+                 ->where('order_details.seller_id',$id)
+                 ->paginate(10);
+                 
         return view('frontend.pages.Seller.orderStatus',compact('orders'));
+    }
+
+    public function sellerOrder($id){
+        $seller_id =  Session::get('sellerId');
+        $orderView = OrderManage::find($id);
+        // dd($orderView);
+        $orders = OrderDetails::where('order_id',$orderView->id)
+                            ->where('seller_id',$seller_id)
+                            ->get();
+        $payment = paid::where('id',$orderView->id)->first();
+    $shipping = Delivery::where('id',$orderView->shipping_id)->first();
+     return view('frontend.pages.Seller.orderViewDetails',compact('orderView','orders','payment','shipping'));
     }
 
     public function sellerProductStock(){
@@ -130,18 +152,19 @@ class SellerProductController extends Controller
 
     public function sellerProductReports(){
         $id =  Session::get('sellerId');
-        $sales = Shipping::where('seller_id',$id)
-            ->where('status',1)
-            ->orderBy('id','desc')
+        $complete = OrderDetails::where('created_at', '>=',Carbon::now()->subDays(7))
+            ->where('seller_id',$id)
+            ->orderBy('created_at', 'asc')
             ->paginate(10);
-        return view('frontend.pages.Seller.reportsContain',compact('sales'));
+        return view('frontend.pages.Seller.reportsContain',compact('complete'));
     }
 
     public function sellerProductInvoice(){
         $id =  Session::get('sellerId');
-        $sales = Shipping::where('status',1)
-                        ->where('seller_id',$id)
-                         ->get();
+        $sales = OrderDetails::where('created_at', '>=',Carbon::now()->subDays(7))
+        ->where('seller_id',$id)
+        ->orderBy('created_at','asc')
+        ->get();
           $sale=PDF::loadView('frontend.pages.Seller.salesInvoice',compact('sales'));
         $sale->stream('sales.pdf');
         return $sale->download('sales.pdf');
@@ -174,20 +197,26 @@ class SellerProductController extends Controller
 
     public function sellerTransaction(){
         $id =  Session::get('sellerId');
-        $sales = Shipping::where('seller_id',$id)
-            ->where('status',1)
-            ->get();
+        $orders = DB::table('order_details')
+                  ->join('order_manages','order_manages.id','=','order_details.order_id')
+                   ->select('order_manages.*')
+                  ->where('order_details.seller_id',$id)
+                  ->get();
         $total = 0;
-        foreach ($sales as $sale){
-            $total +=$sale->total_price;
+        foreach ($orders as $sale){
+            $total +=$sale->total;
         }
-        $id =  Session::get('sellerId');
-        $dues = Shipping::where('seller_id',$id)->get();
+        
+        $dues = DB::table('order_details')
+        ->join('order_manages','order_manages.id','=','order_details.order_id')
+         ->select('order_manages.*')
+        ->where('order_details.seller_id',$id)
+        ->where('order_manages.is_complete',1)
+        ->get();
         $dueTotal = 0;
         foreach ($dues as $due){
-            $dueTotal +=$due->total_price;
+            $dueTotal +=$due->total;
         }
-
         return view('frontend.pages.Seller.transaction',compact('total','dueTotal'));
     }
 }

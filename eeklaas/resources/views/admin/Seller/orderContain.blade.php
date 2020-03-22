@@ -15,46 +15,29 @@
                             <h4 class="card-title text-center">Seller Orders Summary</h4>
                         </div>
                         <div class="card-body">
-                              <table class="table table-bordered table-hover table-responsive">
+                        <table id="table" class="table table-bordered table-hover table-responsive">
                         <thead>
                             <th>SL.</th>
                             <th>Product Name</th>
-                            <th>Phone</th>
-                            <th>Address</th>
-                            <th>Supplier</th>
                             <th>Quantity</th>
                             <th>Unit Price</th>
-                            <th>shipping Cost</th>
-                            <th>Discount</th>
                             <th>Total Price</th>
-                            <th>Payment</th>
-                            <th>Status</th>
+                             
                         </thead>
                         <tbody>
                             @foreach($orders as $key=> $delivery)
                                 <tr>
                                     <td>{{$key+1}}</td>
-                                    <td>{{$delivery->productName}}</td>
-                                    <td>{{$delivery->phone}}</td>
-                                    <td>{{$delivery->address}}</td>
-                                    <td>{{$delivery->supplier}}</td>
-                                    <td>{{$delivery->quantity}}</td>
-                                    <td>{{$delivery->price}}</td>
-                                    <td>{{$delivery->shipping_charge}}</td>
-                                    <td>{{$delivery->discount}}</td>
-                                    <td>{{$delivery->total_price}}</td>
-                                    <td>{{$delivery->payment_type}}</td>
-                                    <td>
-                                        @if($delivery->status==0)
-                                            <a href="{{route('delivery.complete',$delivery->id)}}"><button class="btn btn-warning btn-sm">Processing</button></a>
-                                        @else
-                                            <a href=""><button class="btn btn-success btn-sm">Completed</button></a>
-                                        @endif
-                                    </td>
+                                    <td>{{$delivery->product_name}}</td>
+                                    <td>{{$delivery->product_quantity}}</td>
+                                    <td>{{$delivery->product_price}}</td>
+                                    <td>{{$delivery->product_price*$delivery->product_quantity}}</td>
+                                
                                 </tr>
                             @endforeach
                         </tbody>
-                    </table>
+                    </table>  
+                            
                         </div>
                     </div>
                 </div>

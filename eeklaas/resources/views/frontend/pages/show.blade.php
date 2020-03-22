@@ -70,10 +70,12 @@
             <div class="reviews-actions"> <a href="" class="action view">Based  on 3 ratings</a></div>
           </div>
           <div class="product-info-price">
-            <div class="price-box"> <span class="price">Price:&nbsp;{{$product->price}}tk
-                    @if($product->offer_price)
-                </span>&nbsp<span class="label-sale">off&nbsp{{$product->offer_price}}tk</span>
-                @endif
+            <div class="price-box"> 
+            <span class="price">@if($product->new_price)
+                  <div class="product-item-price"> Price:&nbsp; <span class="price">&#2547;{{$product->new_price}}</span></div>         
+                  @else
+                  <div class="product-item-price">Price:&nbsp;  <span class="price">&#2547;{{$product->price}}</span></div>
+                  @endif
             </div>
           </div>
           <div class="product-code"> Item Code:{{$product->sku}} </div><br>
@@ -238,10 +240,19 @@
                     @include('frontend.pages.products.partials.wish-button')
                 </div>
                   @include('frontend.pages.products.partials.cart-button')
+                  @if($product->offer_price>0)
+                        <span class="product-item-label label-price">{{$product->offer_price}}% <span>off</span></span>
+                        @endif
               </div>
               <div class="product-item-detail"> <strong class="product-item-name"><a href="">{{$product->title}}</a></strong>
                 <div class="clearfix">
-                  <div class="product-item-price"> <span class="price">{{$product->price}}</span> <span class="old-price">$52.00</span> </div>
+
+                @if($product->new_price)
+                  <div class="product-item-price"> <span class="price">&#2547;{{$product->new_price}}</span> <span class="old-price">&#2547;{{$product->price}}.00</span> </div>         
+                  @else
+                  <div class="product-item-price"> <span class="price">&#2547;{{$product->price}}</span></div>
+                  @endif
+                  
                   <div class="product-reviews-summary">
                     <div class="rating-summary">
                       <div class="rating-result" title="70%"> <span style="width:70%"> <span><span>70</span>% of <span>100</span></span> </span> </div>

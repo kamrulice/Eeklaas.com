@@ -150,13 +150,18 @@
                                        </div>
 
                                         @include('frontend.pages.products.partials.cart-button')
-                                           <span class="product-item-label label-price">30% <span>off</span></span> </div>
+                                        @if($product->offer_price>0)
+                        <span class="product-item-label label-price">{{$product->offer_price}}% <span>off</span></span>
+                        @endif
+                                            </div>
                                           <div class="product-item-detail"> <strong class="product-item-name"><a href="pro_det.html">{{$parent->title}}</a></strong>
                                                 <div class="clearfix">
-                                                  <div class="product-item-price">
-                                                    <span class="price">{{$parent->price}}</span>
-                                                    <!-- <span class="old-price">&#2547; 52.00</span>  -->
-                                                  </div>
+                                                 
+                @if($parent->new_price)
+                  <div class="product-item-price"> <span class="price">&#2547;{{$parent->new_price}}</span> <span class="old-price">&#2547;{{$parent->price}}.00</span> </div>         
+                  @else
+                  <div class="product-item-price"> <span class="price">&#2547;{{$parent->price}}</span></div>
+                  @endif
                                                   <div class="product-reviews-summary">
                                                     <div class="rating-summary">
                                                       <div title="80%" class="rating-result">
@@ -210,10 +215,19 @@
                           @include('frontend.pages.products.partials.wish-button')
                         </div>
                         @include('frontend.pages.products.partials.cart-button')
+                        @if($product->offer_price>0)
+                        <span class="product-item-label label-price">{{$product->offer_price}}% <span>off</span></span>
+                        @endif
                       </div>
                       <div class="product-item-detail"> <strong class="product-item-name"><a href="">{{$product->title}}</a></strong>
                         <div class="clearfix">
-                          <div class="product-item-price"> <span class="price">{{$product->price}}</span> </div>
+                         
+                 @if($product->new_price)
+                  <div class="product-item-price"> <span class="price">&#2547;{{$product->new_price}}</span> <span class="old-price">&#2547;{{$product->price}}.00</span> </div>         
+                  @else
+                  <div class="product-item-price"> <span class="price">&#2547;{{$product->price}}</span></div>
+                  @endif
+
                           <div class="product-reviews-summary">
                             <div class="rating-summary">
                               <div title="80%" class="rating-result"> <span style="width:80%"> <span><span>80</span>% of <span>100</span></span> </span> </div>
@@ -257,16 +271,24 @@
                         <div class="product-item-actions">
                           @include('frontend.pages.products.partials.wish-button')
                         </div>
-                          @if($product->quantity> 0)
+                          
                         @include('frontend.pages.products.partials.cart-button')
-                          @endif
+                        @if($product->offer_price>0)
+                        <span class="product-item-label label-price">{{$product->offer_price}}% <span>off</span></span>
+                        @endif
                       </div>
                       <div class="product-item-detail"> <strong class="product-item-name"><a href="">{{$product->title}}</a></strong>
                         <div class="clearfix">
-                          <div class="product-item-price"> <span class="price">{{$product->price}}</span><span class="label-sale">&nbsp; off:&nbsp;{{$product->offer_price}}</span> </div>
+                          
+                @if($product->new_price)
+                  <div class="product-item-price"> <span class="price">&#2547;{{$product->new_price}}</span> <span class="old-price">&#2547;{{$product->price}}.00</span> </div>         
+                  @else
+                  <div class="product-item-price"> <span class="price">&#2547;{{$product->price}}</span></div>
+                  @endif
+
                           <div class="product-reviews-summary">
                             <div class="rating-summary">
-                              <div title="80%" class="rating-result"> <span style="width:80%"> <span><span>{{$product->offer_price}}</span>of <span>100</span></span> </span> </div>
+                              <div title="80%" class="rating-result"> <span style="width:80%"> <span><span></span>of <span>100</span></span> </span> </div>
                             </div>
                           </div>
                         </div>
@@ -365,10 +387,18 @@
 
                          </div>
                         @include('frontend.pages.products.partials.cart-button')
+                        @if($product->offer_price>0)
+                        <span class="product-item-label label-price">{{$product->offer_price}}% <span>off</span></span>
+                        @endif
                       </div>
                       <div class="product-item-detail"> <strong class="product-item-name"><a href="{{ route('products.show',$parent->id)}}">{{$product->title}}</a></strong>
                         <div class="clearfix">
-                          <div class="product-item-price"> <span class="price">&#2547; {{$product->price}}</span> </div>
+                        @if($product->new_price)
+                  <div class="product-item-price"> <span class="price">&#2547;{{$product->new_price}}</span> <span class="old-price">&#2547;{{$product->price}}.00</span> </div>         
+                  @else
+                  <div class="product-item-price"> <span class="price">&#2547;{{$product->price}}</span></div>
+                  @endif
+        
                           <div class="product-reviews-summary">
                             <div class="rating-summary">
                             </div>

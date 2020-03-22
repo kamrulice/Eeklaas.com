@@ -13,11 +13,12 @@
                     <div class="order-detail-content">
                         <div class="content-text clearfix">
                         </div>
+                        @if(count($orders) >0)
                          <div class="card">
                              <div class="card-header text-center">Order Summary</div>
                              <div class="card-body">
                                  <div class="table-responsive">
-                                    @if($orders!=null)
+                                   
                                         <div class="">
                                             <ul class="list-group">
                                                 <span class="text-success font-weight-bold">Receiver Details</span>
@@ -70,6 +71,13 @@
                                                 <button class="btn btn-success">Invoice</button>
                                             </a>
                                          </span>
+                                         @else
+                                    <div class="card">
+                                        <div class="card-header text-center bg-success text-light">@if(Auth::check()){{Auth::user()->name}}@endif Welcome to your 
+                                        Dashboard, We are happy you are here...
+                                        </div>
+                                    </div>
+
                                      @endif
                                  </div>
                              </div>

@@ -61,35 +61,36 @@
                  <div class="col-md-6" style="height:425px; box-shadow:0 0 1px 5px #E5E5E5; grid-gap:1em ;">
                      <p class="text-center mt-4">All Sales Summary</p>
 
-                         <table class="table table-bordered table-hover table-responsive">
-                             <thead>
+                     <table id="table" class="table table-bordered table-hover table-responsive">
+                        <thead>
+                            <th>SL.</th>
+                            <th>Product Name</th>
+                            <th>Quantity</th>
+                            <th>Unit Price</th>
+                            <th>Total Price</th>
+                             
+                        </thead>
+                        <tbody>
+                            @foreach($complete as $key=> $delivery)
                                 <tr>
-                                    <th>SL.</th>
-                                    <th>Product</th>
-                                    <th>Quantity</th>
-                                    <th>Unit price</th>
-                                    <th>Total Price</th>
-                                </tr>
-                             </thead>
-                             <tbody>
-                             @php $total=0; @endphp
-                             @foreach($complete as $key=> $sale)
-                                <tr>
-                                    <td>{{$key+1}}</td>
-                                    <td>{{$sale->productName}}</td>
-                                    <td>{{$sale->quantity}}</td>
-                                    <td>{{$sale->price}}&nbsp;Taka</td>
-                                    <td>{{$sale->total_price}}&nbsp;Taka</td>
-                                    @php $total = $total+$sale->total_price @endphp
-                                </tr>
-                                 @endforeach
-                             <tr>
-                                 <td colspan="3"></td>
-                                 <td>Total Sales</td>
-                                 <td>{{$total}}&nbsp;Taka</td>
-                             </tr>
-                             </tbody>
-                         </table>
+                                <td>{{$key+1}}</td>
+                                <td>{{$delivery->product_name}}</td>
+                                <td>{{$delivery->product_quantity}}</td>
+                                <td>{{$delivery->product_price}}</td>
+                                <td>{{$delivery->product_quantity*$delivery->product_price}}</td>
+                                @php
+                                $total_price= $delivery->product_quantity*$delivery->product_price;
+                                 $total += $total_price ;@endphp
+                            </tr>
+                        @endforeach
+                        <tr>
+                            <td colspan="3"></td>
+                            <td>Total Sale</td>
+                            <td><?php echo $total; ?></td>
+                        </tr>
+                        </tbody>
+                    </table>
+
 
                  </div>
                  <div class="col-md-3" style="height:425px; box-shadow:0 0 10px 0 #E5E5E5; grid-gap:1em ;">
